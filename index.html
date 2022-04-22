@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイピングゲーム</title>
+    <script src="tailwindcss.js"></script>
+</head>
+<body　style="height: 100vh; width: 100%;">
+    <div
+        class="text-center mt-10 max-w-[600px] p-5 mx-auto
+               border-2 rounded-xl shadow-xl bg-white"
+        id="app"
+    >
+        <h1 class="text-4xl">{{ words[number] }}</h1>
+        <input
+            type="text"
+            class="border-b-2 py-1 px-5 mt-2 font-bold text-center"
+            v-on:change="onChange"
+            v-model="inMoji"
+            :disabled="!canInput"
+        >
+        <p class="mt-2">{{ point }}ポイント</p>
+        <p class="mt-2">残り時間：{{ time }}</p>
+    </div>
+    <script src="vuejs.js"></script>
+    <script>
+        Vue.createApp({
+            data(){return{
+                words: [],
+                number:  0,
+                point: 0,
+                inMoji: "",
+                time: 30,
+                started: false,
+                canInput: true
+            }},
+            methods:{
+                newWord(){
+                    const max = this.words.length;
+                    const newNumber = Math.floor(Math.random() * max) + 1;
+                    this.number = newNumber;
+                },
+                onChange(){
+                    if (this.started == false){
+                        this.inMoji = ""
+                        this.started = true
+                        this.newWord()
+                        const timer = setInterval(function(){
+                            this.time = this.financial(this.time - 0.1);
+                            if (this.time == 0){
+                                clearInterval(timer)
+                                this.canInput = false
+
+                                alert(`結果は${this.point}ポイントでした！\n(サイトを再読み込みして再チャレンジ可能)`)
+                            }
+                        }.bind(this), 100)
+                    }else{
+                        if(this.inMoji == this.words[this.number]){
+                            this.newWord()
+                            this.point += 50
+                            this.inMoji = ""
+                        }else{
+                            this.inMoji = ""
+                            if (this.point > 0){
+                                this.point -= 10
+                            }
+                        }
+                    }
+                },
+                financial(x) {
+                    return Number.parseFloat(x).toFixed(1);
+                }
+            },
+            mounted(){
+                const request = new XMLHttpRequest();
+                request.addEventListener('load', (event) => {
+                    const response = event.target.responseText;
+                    var dataArray = [];
+                    dataArray =response.split('\n');
+                    this.words = dataArray
+                    console.log(dataArray);
+                });
+                request.open('GET', "mondai.csv", true);
+                request.send();
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
