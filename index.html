@@ -38,7 +38,7 @@
             }},
             methods:{
                 newWord(){
-                    const max = this.words.length;
+                    const max = this.words.length - 1;
                     const newNumber = Math.floor(Math.random() * max) + 1;
                     this.number = newNumber;
                 },
