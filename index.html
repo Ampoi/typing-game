@@ -7,7 +7,7 @@
     <title>タイピングゲーム</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body　style="height: 100vh; width: 100%;">
+<body style="height: 100vh; width: 100%; background-color: white;">
     <div
         class="text-center mt-10 max-w-[600px] p-5 mx-auto
                border-2 rounded-xl shadow-xl bg-white"
@@ -22,7 +22,10 @@
             :disabled="!canInput"
         >
         <p class="mt-2">{{ point }}ポイント</p>
-        <p class="mt-2">残り時間：{{ time }}</p>
+        <p class="mt-2">残り時間：{{ time }}秒</p>
+        <div class="bg-sky-600 h-0.5 rounded-half mx-auto mt-2"
+             :style="`width: ${time * 5}px;`"
+        ></div>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script>
@@ -32,7 +35,7 @@
                 number:  0,
                 point: 0,
                 inMoji: "",
-                time: 30,
+                time: 60,
                 started: false,
                 canInput: true
             }},
@@ -87,5 +90,10 @@
             }
         }).mount('#app')
     </script>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            html{filter: invert(1) hue-rotate(180deg);}
+        }
+    </style>
 </body>
 </html>
